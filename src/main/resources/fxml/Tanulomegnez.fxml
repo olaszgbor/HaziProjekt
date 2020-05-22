@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TanulomegnezController">
+   <children>
+      <TableView fx:id="tableTanulo" editable="true" layoutX="2.0" layoutY="2.0" prefHeight="312.0" prefWidth="600.0">
+        <columns>
+          <TableColumn fx:id="columnNev" prefWidth="172.0" text="Név" />
+          <TableColumn fx:id="columnKor" prefWidth="39.0" text="Kor" />
+            <TableColumn fx:id="columnAzon" prefWidth="134.0" text="Azonosító" />
+            <TableColumn fx:id="columnSzul" prefWidth="177.0" text="Születési Idő" />
+            <TableColumn fx:id="columnOsztaly" prefWidth="66.0" text="Osztály" />
+        </columns>
+      </TableView>
+      <Button fx:id="torlesButton" layoutX="361.0" layoutY="368.0" mnemonicParsing="false" onAction="#tanuloTorles" text="Törlés" />
+      <Button fx:id="szerkesztButton" layoutX="271.0" layoutY="368.0" mnemonicParsing="false" onAction="#tanuloSzerkeszt" text="Szerkesztés" />
+      <Button fx:id="mentButton" layoutX="207.0" layoutY="368.0" mnemonicParsing="false" onAction="#tanuloMent" text="Mentés" />
+      <TextField fx:id="szerkesztNevTextField" layoutX="24.0" layoutY="332.0" prefHeight="25.0" prefWidth="149.0" />
+      <TextField fx:id="szerkesztKorTextField" layoutX="183.0" layoutY="332.0" prefHeight="25.0" prefWidth="35.0" />
+      <ChoiceBox fx:id="szerkesztOsztalyChoiceBox" layoutX="541.0" layoutY="332.0" prefHeight="25.0" prefWidth="55.0" />
+      <DatePicker fx:id="szerkesztSzulDatePicker" layoutX="348.0" layoutY="332.0" />
+   </children>
+</Pane>

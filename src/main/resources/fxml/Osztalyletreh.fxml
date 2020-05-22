@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.OsztalyletrehController">
+   <children>
+      <TextField fx:id="azonTextfield" layoutX="349.0" layoutY="188.0" />
+      <Label layoutX="136.0" layoutY="188.0" prefHeight="25.0" prefWidth="33.0" text="azon" />
+      <Label layoutX="272.0" layoutY="28.0" text="Osztály létrehozása" />
+      <Button fx:id="osztalyLetrehButton" layoutX="296.0" layoutY="342.0" mnemonicParsing="false" onAction="#osztalyLetrehozas" text="Létrehoz" />
+      <TextField fx:id="letszamTextfield" layoutX="349.0" layoutY="231.0" />
+      <Label layoutX="136.0" layoutY="231.0" prefHeight="25.0" prefWidth="62.0" text="létszám" />
+      <Label layoutX="139.0" layoutY="270.0" prefHeight="17.0" prefWidth="42.0" text="ofő" />
+      <ChoiceBox fx:id="ofoChoiceBox" layoutX="348.0" layoutY="275.0" prefWidth="150.0" />
+   </children>
+</Pane>
