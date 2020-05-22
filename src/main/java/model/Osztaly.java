@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,4 +39,24 @@ public class Osztaly {
     @JoinColumn(name = "osztaly")
     private Tanar ofo;
 
+    public boolean letszamValid(){
+        return aktualisLetszam<letszam && letszam<0 && letszam > 40;
+    }
+
+    public boolean azonValid(){
+        if(getAzon().contains(".")) {
+            String[] azonreszek = getAzon().split(".");
+            if (Integer.valueOf(azonreszek[0]) > 0 && Integer.valueOf(azonreszek[0]) <= 13) {
+                if(azonreszek[1].length()<=3){
+                    char[] azonreszekreszek = azonreszek[1].toCharArray();
+                    for (char c : azonreszekreszek) {
+                        if (!Character.isLetter(c))
+                            return false;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

@@ -139,13 +139,12 @@ public class TanulomegnezController {
         if(tableTanulo.getSelectionModel().getSelectedItem()!=null && szerkesztNevTextField.getText() != null && szerkesztKorTextField.getText() != null && szerkesztSzulDatePicker.getValue() != null && szerkesztOsztalyChoiceBox.getSelectionModel().getSelectedItem() != null) {
             Tanulo tanulo = tableTanulo.getSelectionModel().getSelectedItem();
             Osztaly ujOsztaly = osztalyDao.find(szerkesztOsztalyChoiceBox.getValue()).get();
-            if(tanulo.getOsztaly()!= ujOsztaly && ujOsztaly.getAktualisLetszam()<ujOsztaly.getLetszam()) {
+            if(tanulo.getOsztaly()!= ujOsztaly && ujOsztaly.letszamValid()) {
                 Osztaly regiOsztaly = osztalyDao.find(tanulo.getOsztaly().getAzon()).get();
                 regiOsztaly.getTanulok().remove(tanulo);
                 regiOsztaly.setAktualisLetszam(regiOsztaly.getTanulok().size());
                 ujOsztaly.getTanulok().add(tanulo);
                 ujOsztaly.setAktualisLetszam(ujOsztaly.getTanulok().size());
-                osztalyDao.update(ujOsztaly);
                 tanulo.setOsztaly(ujOsztaly);
             }
             tanulo.setNev(szerkesztNevTextField.getText());
@@ -154,11 +153,17 @@ public class TanulomegnezController {
             Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
             Date date = Date.from(instant);
             tanulo.setSzuletesiIdo(date);
-            tanuloDao.update(tanulo);
-            tableTanulo.getItems().clear();
-            ObservableList<Tanulo> tanulok = FXCollections.observableList(tanuloDao.findAll());
-            tableTanulo.setItems(tanulok);
-
+            if(tanulo.eletkorValid()){
+                if(tanulo.nevValid()){
+                    if(tanulo.szulIdoValid()){
+                        osztalyDao.update(ujOsztaly);
+                        tanuloDao.update(tanulo);
+                        tableTanulo.getItems().clear();
+                        ObservableList<Tanulo> tanulok = FXCollections.observableList(tanuloDao.findAll());
+                        tableTanulo.setItems(tanulok);
+                    }
+                }
+            }
             szerkesztNevTextField.setText("");
             szerkesztKorTextField.setText("");
             szerkesztSzulDatePicker.setValue(null);

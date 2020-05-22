@@ -12,6 +12,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import model.Osztaly;
+import model.Tanar;
 import model.Tanulo;
 import util.jpa.PersistenceModule;
 
@@ -59,7 +60,7 @@ public class TanuloletrehController {
     public void tanuloLetrehozas(ActionEvent actionEvent) {
         if (nevTextfield.getText() != null && korTextfield.getText() != null && azonTextfield.getText() != null && szulDatePicker.getValue() != null && osztalyChoiceBox.getSelectionModel().getSelectedItem() != null) {
             Osztaly osztaly = osztalyDao.find(osztalyChoiceBox.getSelectionModel().getSelectedItem()).get();
-            if(osztaly.getAktualisLetszam()<osztaly.getLetszam()) {
+            if(osztaly.letszamValid()) {
                 LocalDate localDate = szulDatePicker.getValue();
                 Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
                 Date date = Date.from(instant);
@@ -70,7 +71,13 @@ public class TanuloletrehController {
                         .szuletesiIdo(date)
                         .osztaly(osztaly)
                         .build();
-                tanuloDao.persist(tanulo);
+                if(tanulo.eletkorValid()){
+                    if(tanulo.nevValid()){
+                        if(tanulo.szulIdoValid()){
+                            tanuloDao.persist(tanulo);
+                        }
+                    }
+                }
                 osztaly.setAktualisLetszam(osztaly.getTanulok().size());
                 osztalyDao.update(osztaly);
             }

@@ -59,7 +59,9 @@ public class OsztalyletrehController {
                     .ofo(tanarDao.find(ofoChoiceBox.getSelectionModel().getSelectedItem()).get())
                     .build();
             if(osztalyDao.find(osztaly.getAzon()).isEmpty()) {
-                osztalyDao.persist(osztaly);
+                if(osztaly.azonValid()){
+                    osztalyDao.persist(osztaly);
+                }
             }
         }
     }

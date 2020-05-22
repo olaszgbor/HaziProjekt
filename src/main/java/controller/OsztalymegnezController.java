@@ -112,10 +112,12 @@ public class OsztalymegnezController {
             osztaly.setLetszam(Integer.valueOf(szerkesztLetszamTextField.getText()));
             osztaly.setOfo(tanarDao.find(szerkesztOfoChoiceBox.getValue()).get());
             osztaly.getOfo().setOsztaly(osztaly);
-            osztalyDao.update(osztaly);
-            tableOsztaly.getItems().clear();
-            ObservableList<Osztaly> osztalyok = FXCollections.observableList(osztalyDao.findAll());
-            tableOsztaly.setItems(osztalyok);
+            if(osztaly.letszamValid()){
+                osztalyDao.update(osztaly);
+                tableOsztaly.getItems().clear();
+                ObservableList<Osztaly> osztalyok = FXCollections.observableList(osztalyDao.findAll());
+                tableOsztaly.setItems(osztalyok);
+            }
             szerkesztLetszamTextField.setText("");
             szerkesztOfoChoiceBox.setValue(null);
         }

@@ -55,7 +55,13 @@ public class TanarletrehController {
                     .azon(azonTextfield.getText())
                     .szuletesiIdo(date)
                     .build();
-            tanarDao.persist(tanar);
+            if(tanar.eletkorValid()){
+                if(tanar.nevValid()){
+                    if(tanar.szulIdoValid()){
+                        tanarDao.persist(tanar);
+                    }
+                }
+            }
         }
     }
 }

@@ -151,10 +151,16 @@ public class TanarmegnezController {
                 tanar.setOsztaly(osztalyDao.find(szerkesztOsztalyChoiceBox.getValue()).get());
                 tanar.getOsztaly().setOfo(tanar);
             }
-            tanarDao.update(tanar);
-            tableTanar.getItems().clear();
-            ObservableList<Tanar> tanarok = FXCollections.observableList(tanarDao.findAll());
-            tableTanar.setItems(tanarok);
+            if(tanar.eletkorValid()){
+                if(tanar.nevValid()){
+                    if(tanar.szulIdoValid()){
+                        tanarDao.update(tanar);
+                        tableTanar.getItems().clear();
+                        ObservableList<Tanar> tanarok = FXCollections.observableList(tanarDao.findAll());
+                        tableTanar.setItems(tanarok);
+                    }
+                }
+            }
             szerkesztNevTextField.setText("");
             szerkesztKorTextField.setText("");
             szerkesztSzulDatePicker.setValue(null);
