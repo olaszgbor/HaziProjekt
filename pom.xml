@@ -8,7 +8,7 @@
     <artifactId>HaziProjekt</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>
-        A projekt egy adatbázis kezelését hajtja végre JavaFX felületen,
+        A projekt egy oktatási adatbázis kezelését hajtja végre JavaFX felületen,
         tanulók, tanárok, osztályok létrehozását, szerkesztését és törlését teszi lehetővé.
     </description>
     <developers>
