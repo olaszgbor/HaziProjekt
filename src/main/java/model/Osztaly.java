@@ -39,26 +39,43 @@ public class Osztaly {
     @JoinColumn(name = "osztaly")
     private Tanar ofo;
 
+    /**
+     * Az osztály létszámának érvényességét vizsgáló metódus
+     * @return Igaz, ha nagyobb, mint 0, kisebb, mint 40,
+     * és az aktuális létszám a megadott létszámnál kisebb,
+     * egyébként hamis
+     */
     public boolean letszamValid() {
-        return aktualisLetszam < letszam && letszam > 0 && letszam < 40;
+        return aktualisLetszam < letszam &&
+                letszam > 0 &&
+                letszam < 40;
     }
 
+    /**
+     * Az azonosító érvényességét vizsgáló metódus
+     * @return Igaz, ha tartalmaz összesen 1 pontot,
+     * a pont előtti egység 13-nál kevesebb szám,
+     * a pont utáni egység maximum 3 karakter, és nem tartalmaz számot,
+     * egyébként hamis
+     */
     public boolean azonValid() {
         if (getAzon().contains(".")) {
             String[] azonreszek = getAzon().split("\\.");
-            for (char c : azonreszek[0].toCharArray()) {
-                if (!Character.isDigit(c)) {
-                    return false;
-                }
-            }
-            if (Integer.valueOf(azonreszek[0]) > 0 && Integer.valueOf(azonreszek[0]) <= 13) {
-                if (azonreszek[1].length() <= 3) {
-                    char[] azonreszekreszek = azonreszek[1].toCharArray();
-                    for (char c : azonreszekreszek) {
-                        if (!Character.isLetter(c))
-                            return false;
+            if (azonreszek.length == 2) {
+                for (char c : azonreszek[0].toCharArray()) {
+                    if (!Character.isDigit(c)) {
+                        return false;
                     }
-                    return true;
+                }
+                if (Integer.valueOf(azonreszek[0]) > 0 && Integer.valueOf(azonreszek[0]) <= 13) {
+                    if (azonreszek[1].length() <= 3) {
+                        char[] azonreszekreszek = azonreszek[1].toCharArray();
+                        for (char c : azonreszekreszek) {
+                            if (!Character.isLetter(c))
+                                return false;
+                        }
+                        return true;
+                    }
                 }
             }
         }

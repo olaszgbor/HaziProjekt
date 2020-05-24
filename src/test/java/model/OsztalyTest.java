@@ -33,10 +33,14 @@ public class OsztalyTest {
         underTest.setAktualisLetszam(23);
         Assertions.assertTrue(underTest.letszamValid());
     }
-    //
     @Test
     public void azonValidNoPointTest(){
         underTest.setAzon("11c");
+        Assertions.assertFalse(underTest.azonValid());
+    }
+    @Test
+    public void azonValidMorePointsTest(){
+        underTest.setAzon("11.c.c");
         Assertions.assertFalse(underTest.azonValid());
     }
     @Test

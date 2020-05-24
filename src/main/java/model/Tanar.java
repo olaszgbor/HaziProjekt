@@ -18,6 +18,9 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * Egy tanárt reprezentáló osztály
+ */
 public class Tanar {
     /**
      * Egy tanár neve
@@ -42,14 +45,28 @@ public class Tanar {
     @OneToOne(mappedBy = "ofo")
     private Osztaly osztaly;
 
+    /**
+     * Az életkor érvényességét vizsgáló metódus
+     * @return Igaz, ha 21-nél nagyobb vagy vele egyenlő, és 60-nál kevesebb, egyébként hamis
+     */
     public boolean eletkorValid() {
         return getKor() >= 21 && getKor() < 60;
     }
-
+    /**
+     * Az azonosító érvényességét vizsgáló metódus
+     * @return Igaz, ha bármilyen (nem-whitespace) karaktert tartalmaz, egyébként hamis
+     */
     public boolean azonValid() {
-        return !getAzon().isBlank() && !getAzon().isEmpty();
+        return !getAzon().isBlank();
     }
 
+    /**
+     * A név érvényességét vizsgáló metódus
+     * @return Igaz, ha szóközzel elválasztva két nagybetűvel kezdődő Sztringsorozatot adunk,
+     * vagy ha ezelőtt kisbetűvel jelöljük, hogy ifjabb vagy idősebb családtagról van szó azonos névvel,
+     * vagy ha kisbetűs titulusa (professzor vagy doktor) van a tanárnak,
+     * egyébként hamis.
+     */
     public boolean nevValid() {
         if (getNev().contains(" ")) {
             String[] nevreszek = getNev().split(" ");
@@ -73,11 +90,16 @@ public class Tanar {
         return false;
     }
 
+    /**
+     * A születési idő érvényességét vizsgáló metódus
+     * @return Igaz, ha a mai dátum évének és a születési idő évének különbsége
+     * megegyezik a korral, vagy annál eggyel több, egyébként hamis.
+     */
     public boolean szulIdoValid(){
         Calendar szuletesiIdo = Calendar.getInstance();
         szuletesiIdo.setTime(getSzuletesiIdo());
-        return Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)<=getKor()+1 &&
-                Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)>=getKor();
+        return Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)==getKor()+1 ||
+                Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)==getKor();
     }
 
 }

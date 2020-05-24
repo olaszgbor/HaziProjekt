@@ -16,6 +16,9 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * Egy tanulót reprezentáló osztály
+ */
 public class Tanulo {
     /**
      * Egy tanuló neve
@@ -40,14 +43,28 @@ public class Tanulo {
     @ManyToOne
     private Osztaly osztaly;
 
+    /**
+     * Az életkor érvényességét vizsgáló metódus
+     * @return Igaz, ha 6-nál nagyobb vagy vele egyenlő, egyébként hamis
+     */
     public boolean eletkorValid(){
         return getKor()>=6;
     }
 
+    /**
+     * Az azonosító érvényességét vizsgáló metódus
+     * @return Igaz, ha bármilyen (nem-whitespace) karaktert tartalmaz, egyébként hamis
+     */
     public boolean azonValid() {
-        return !getAzon().isBlank() && !getAzon().isEmpty();
+        return !getAzon().isBlank();
     }
 
+    /**
+     * A név érvényességét vizsgáló metódus
+     * @return Igaz, ha szóközzel elválasztva két nagybetűvel kezdődő Stringsorozatot adunk,
+     * vagy ha ezelőtt jelöljük, hogy ifjabb vagy idősebb családtagról van szó azonos névvel,
+     * egyébként hamis.
+     */
     public boolean nevValid() {
         if (getNev().contains(" ")) {
             String[] nevreszek = getNev().split(" ");
@@ -70,11 +87,15 @@ public class Tanulo {
         }
         return false;
     }
-
+    /**
+     * A születési idő érvényességét vizsgáló metódus
+     * @return Igaz, ha a mai dátum évének és a születési idő évének különbsége
+     * megegyezik a korral, vagy annál eggyel több, egyébként hamis.
+     */
     public boolean szulIdoValid(){
         Calendar szuletesiIdo = Calendar.getInstance();
         szuletesiIdo.setTime(getSzuletesiIdo());
-        return Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)<=getKor()+1 &&
-                Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)>=getKor();
+        return Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)==getKor()+1 ||
+                Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)==getKor();
     }
 }

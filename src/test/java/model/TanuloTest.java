@@ -41,8 +41,13 @@ public class TanuloTest {
         Assertions.assertFalse(underTest.nevValid());
     }
     @Test
-    public void nevValidTitleTeszt() {
+    public void nevValidIdTeszt() {
         underTest.setNev("id. Kiss András");
+        Assertions.assertTrue(underTest.nevValid());
+    }
+    @Test
+    public void nevValidIfjTeszt() {
+        underTest.setNev("ifj. Kiss András");
         Assertions.assertTrue(underTest.nevValid());
     }
     @Test
@@ -70,6 +75,12 @@ public class TanuloTest {
         underTest.setKor(50);
         underTest.setSzuletesiIdo(new Date());
         Assertions.assertFalse(underTest.szulIdoValid());
+    }
+    @Test
+    public void szulIdoFalseValidTeszt() {
+        underTest.setKor(0);
+        underTest.setSzuletesiIdo(new Date());
+        Assertions.assertTrue(underTest.szulIdoValid());
     }
     @Test
     public void szulIdoValidTeszt() throws ParseException {
