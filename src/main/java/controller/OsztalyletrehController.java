@@ -10,13 +10,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import lombok.extern.slf4j.Slf4j;
 import model.Osztaly;
 import model.Tanar;
 import util.jpa.PersistenceModule;
 
 import java.util.stream.Collectors;
 
-
+@Slf4j
 public class OsztalyletrehController {
 
     /**
@@ -61,8 +62,12 @@ public class OsztalyletrehController {
             if(osztalyDao.find(osztaly.getAzon()).isEmpty()) {
                 if(osztaly.azonValid()){
                     osztalyDao.persist(osztaly);
+                    log.info("{} létrehozva", osztaly.getAzon());
                 }
+                else log.warn("{} azonosítója nem érvényes", osztaly.getAzon());
             }
+            else log.warn("{} azonosítója már létezik", osztaly.getAzon());
         }
+        else log.warn("Nem lett kitöltve az összes mező");
     }
 }

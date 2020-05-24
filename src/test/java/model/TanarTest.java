@@ -55,6 +55,21 @@ public class TanarTest {
         Assertions.assertTrue(underTest.nevValid());
     }
     @Test
+    public void azonValidBlankTeszt() {
+        underTest.setAzon("   ");
+        Assertions.assertFalse(underTest.azonValid());
+    }
+    @Test
+    public void azonValidEmptyTeszt() {
+        underTest.setAzon("");
+        Assertions.assertFalse(underTest.azonValid());
+    }
+    @Test
+    public void azonValidTeszt() {
+        underTest.setAzon("PI42");
+        Assertions.assertTrue(underTest.azonValid());
+    }
+    @Test
     public void szulIdoNotValidTeszt() {
         underTest.setKor(50);
         underTest.setSzuletesiIdo(new Date());

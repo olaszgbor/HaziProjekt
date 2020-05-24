@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import lombok.extern.slf4j.Slf4j;
 import model.Osztaly;
 import model.Tanar;
 import model.Tanulo;
@@ -22,6 +23,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class TanuloletrehController {
 
     /**
@@ -46,7 +48,7 @@ public class TanuloletrehController {
      * A tanuló létrehozásához szükséges osztálykiválasztáshoz az elérhető osztályokat kijelző lista feltöltése
      */
     @FXML
-    public void initialize(){
+    public void initialize() {
         Injector injector = Guice.createInjector(new PersistenceModule("jpa-persistence-unit-1"));
         tanuloDao = injector.getInstance(TanuloDao.class);
         osztalyDao = injector.getInstance(OsztalyDao.class);
@@ -60,7 +62,7 @@ public class TanuloletrehController {
     public void tanuloLetrehozas(ActionEvent actionEvent) {
         if (nevTextfield.getText() != null && korTextfield.getText() != null && azonTextfield.getText() != null && szulDatePicker.getValue() != null && osztalyChoiceBox.getSelectionModel().getSelectedItem() != null) {
             Osztaly osztaly = osztalyDao.find(osztalyChoiceBox.getSelectionModel().getSelectedItem()).get();
-            if(osztaly.letszamValid()) {
+            if (osztaly.letszamValid()) {
                 LocalDate localDate = szulDatePicker.getValue();
                 Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
                 Date date = Date.from(instant);
@@ -71,16 +73,20 @@ public class TanuloletrehController {
                         .szuletesiIdo(date)
                         .osztaly(osztaly)
                         .build();
-                if(tanulo.eletkorValid()){
-                    if(tanulo.nevValid()){
-                        if(tanulo.szulIdoValid()){
-                            tanuloDao.persist(tanulo);
-                        }
-                    }
-                }
-                osztaly.setAktualisLetszam(osztaly.getTanulok().size());
-                osztalyDao.update(osztaly);
-            }
-        }
+                if (tanulo.eletkorValid()) {
+                    if (tanulo.nevValid()) {
+                        if (tanulo.azonValid()) {
+                            if (tanulo.szulIdoValid()) {
+                                tanuloDao.persist(tanulo);
+                                log.info("{} - {} létrehozva", tanulo.getAzon(), tanulo.getNev());
+                                osztaly.setAktualisLetszam(osztaly.getTanulok().size());
+                                osztalyDao.update(osztaly);
+                                log.info("Az osztály létszáma bővült");
+                            } else log.warn("{} - {} születési ideje nem érvényes", tanulo.getAzon(), tanulo.getNev());
+                        } else log.warn("{} - {} azonosítója nem érvényes", tanulo.getAzon(), tanulo.getNev());
+                    } else log.warn("{} - {} neve nem érvényes", tanulo.getAzon(), tanulo.getNev());
+                } else log.warn("{} - {} életkora nem érvényes", tanulo.getAzon(), tanulo.getNev());
+            } else log.warn("{} létszáma nem érvényes", osztaly.getAzon());
+        } else log.warn("Nem lett kitöltve az összes mező");
     }
 }

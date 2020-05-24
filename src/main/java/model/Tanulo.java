@@ -44,6 +44,9 @@ public class Tanulo {
         return getKor()>=6;
     }
 
+    public boolean azonValid() {
+        return !getAzon().isBlank() && !getAzon().isEmpty();
+    }
 
     public boolean nevValid() {
         if (getNev().contains(" ")) {

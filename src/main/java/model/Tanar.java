@@ -46,6 +46,10 @@ public class Tanar {
         return getKor() >= 21 && getKor() < 60;
     }
 
+    public boolean azonValid() {
+        return !getAzon().isBlank() && !getAzon().isEmpty();
+    }
+
     public boolean nevValid() {
         if (getNev().contains(" ")) {
             String[] nevreszek = getNev().split(" ");

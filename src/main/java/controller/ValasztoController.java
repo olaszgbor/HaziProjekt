@@ -7,10 +7,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
+@Slf4j
 public class ValasztoController {
 
     /**
@@ -66,5 +69,6 @@ public class ValasztoController {
         stage.setScene(new Scene(root));
         stage.show();
         stage.toFront();
+        log.info("{} betöltve", fxml);
     }
 }

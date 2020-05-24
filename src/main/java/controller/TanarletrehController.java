@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import lombok.extern.slf4j.Slf4j;
 import model.Tanar;
 import org.checkerframework.checker.units.qual.A;
 import util.jpa.PersistenceModule;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+@Slf4j
 public class TanarletrehController {
 
     /**
@@ -36,7 +38,7 @@ public class TanarletrehController {
      * Hozzáfér az adatbázishoz
      */
     @FXML
-    public void initialize(){
+    public void initialize() {
         Injector injector = Guice.createInjector(new PersistenceModule("jpa-persistence-unit-1"));
         tanarDao = injector.getInstance(TanarDao.class);
     }
@@ -55,13 +57,16 @@ public class TanarletrehController {
                     .azon(azonTextfield.getText())
                     .szuletesiIdo(date)
                     .build();
-            if(tanar.eletkorValid()){
-                if(tanar.nevValid()){
-                    if(tanar.szulIdoValid()){
-                        tanarDao.persist(tanar);
-                    }
-                }
-            }
-        }
+            if (tanar.eletkorValid()) {
+                if (tanar.nevValid()) {
+                    if (tanar.azonValid()) {
+                        if (tanar.szulIdoValid()) {
+                            tanarDao.persist(tanar);
+                            log.info("{} - {} létrehozva", tanar.getAzon(), tanar.getNev());
+                        } else log.warn("{} - {} születési ideje nem érvényes", tanar.getAzon(), tanar.getNev());
+                    } else log.warn("{} - {} azonosítója nem érvényes", tanar.getAzon(), tanar.getNev());
+                } else log.warn("{} - {} neve nem érvényes", tanar.getAzon(), tanar.getNev());
+            } else log.warn("{} - {} életkora nem érvényes", tanar.getAzon(), tanar.getNev());
+        } else log.warn("Nem lett kitöltve az összes mező");
     }
 }

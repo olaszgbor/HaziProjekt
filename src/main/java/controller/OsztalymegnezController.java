@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import lombok.extern.slf4j.Slf4j;
 import model.Osztaly;
 import model.Tanar;
 import util.jpa.PersistenceModule;
@@ -22,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class OsztalymegnezController {
     /**
      * Egy osztály táblázatban tárolt adattagjai
@@ -76,7 +78,7 @@ public class OsztalymegnezController {
 
             return cell;
         });
-
+        log.info("A táblázat adatokkal fel lett töltve");
     }
 
     public void osztalyTorles(ActionEvent actionEvent) {
@@ -90,6 +92,7 @@ public class OsztalymegnezController {
             osztalyDao.remove(osztaly);
             ObservableList<Osztaly> osztalyok = FXCollections.observableList(osztalyDao.findAll());
             tableOsztaly.setItems(osztalyok);
+            log.info("{} törölve", osztaly.getAzon());
         }
     }
 
@@ -102,6 +105,7 @@ public class OsztalymegnezController {
             ObservableList<String> ofok = FXCollections.observableList(ofoazonok);
             szerkesztOfoChoiceBox.setItems(ofok);
             szerkesztOfoChoiceBox.setValue(osztaly.getOfo().getAzon());
+            log.info("{} adatai szerkesztve", osztaly.getAzon());
         }
     }
 
@@ -112,14 +116,17 @@ public class OsztalymegnezController {
             osztaly.setLetszam(Integer.valueOf(szerkesztLetszamTextField.getText()));
             osztaly.setOfo(tanarDao.find(szerkesztOfoChoiceBox.getValue()).get());
             osztaly.getOfo().setOsztaly(osztaly);
-            if(osztaly.letszamValid()){
+            if (osztaly.letszamValid()) {
                 osztalyDao.update(osztaly);
                 tableOsztaly.getItems().clear();
                 ObservableList<Osztaly> osztalyok = FXCollections.observableList(osztalyDao.findAll());
                 tableOsztaly.setItems(osztalyok);
+                log.info("{} adatai elmentve", osztaly.getAzon());
             }
+            else log.warn("{} létszáma nem érvényes", osztaly.getAzon());
             szerkesztLetszamTextField.setText("");
             szerkesztOfoChoiceBox.setValue(null);
         }
+        else log.warn("Nem lett kitöltve az összes mező");
     }
 }

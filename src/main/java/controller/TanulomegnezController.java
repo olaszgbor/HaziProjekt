@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import lombok.extern.slf4j.Slf4j;
 import model.Osztaly;
 import model.Tanar;
 import model.Tanulo;
@@ -22,6 +23,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class TanulomegnezController {
     /**
      * A tanulók táblázatban tárolt adattagjai
@@ -29,9 +31,9 @@ public class TanulomegnezController {
     @FXML
     private TableView<Tanulo> tableTanulo;
     @FXML
-    private TableColumn<Tanulo,String> columnNev;
+    private TableColumn<Tanulo, String> columnNev;
     @FXML
-    private TableColumn<Tanulo,Integer> columnKor;
+    private TableColumn<Tanulo, Integer> columnKor;
     @FXML
     private TableColumn<Tanulo, String> columnAzon;
     @FXML
@@ -55,7 +57,7 @@ public class TanulomegnezController {
      * A táblázat feltöltése az adatbázis adattagjaival
      */
     @FXML
-    public void initialize(){
+    public void initialize() {
         Injector injector = Guice.createInjector(new PersistenceModule("jpa-persistence-unit-1"));
         tanuloDao = injector.getInstance(TanuloDao.class);
         osztalyDao = injector.getInstance(OsztalyDao.class);
@@ -72,11 +74,10 @@ public class TanulomegnezController {
                 @Override
                 protected void updateItem(Osztaly item, boolean empty) {
                     super.updateItem(item, empty);
-                    if(empty) {
+                    if (empty) {
                         setText(null);
-                    }
-                    else {
-                        if(item!=null) {
+                    } else {
+                        if (item != null) {
                             setText(item.getAzon());
                         }
                     }
@@ -90,11 +91,10 @@ public class TanulomegnezController {
                 @Override
                 protected void updateItem(Date item, boolean empty) {
                     super.updateItem(item, empty);
-                    if(empty) {
+                    if (empty) {
                         setText(null);
-                    }
-                    else {
-                        if(item!=null) {
+                    } else {
+                        if (item != null) {
                             setText(new SimpleDateFormat("yyyy/MM/dd").format(item));
                         }
                     }
@@ -103,24 +103,27 @@ public class TanulomegnezController {
 
             return cell;
         });
+        log.info("A táblázat adatokkal fel lett töltve");
     }
 
     public void tanuloTorles(ActionEvent actionEvent) {
-        if(tableTanulo.getSelectionModel().getSelectedItem()!=null) {
+        if (tableTanulo.getSelectionModel().getSelectedItem() != null) {
             Tanulo tanulo = tableTanulo.getSelectionModel().getSelectedItem();
-            if(tanulo.getOsztaly()!=null) {
+            if (tanulo.getOsztaly() != null) {
                 tanulo.getOsztaly().getTanulok().remove(tanulo);
                 tanulo.setOsztaly(null);
-            }
+                log.info("{} - {} kivéve a(z) {} osztályból", tanulo.getAzon(), tanulo.getNev(), tanulo.getOsztaly());
+            } else log.warn("{} - {} nem tartozik egy osztályba sem", tanulo.getAzon(), tanulo.getNev());
             tanuloDao.update(tanulo);
             tanuloDao.remove(tanulo);
             ObservableList<Tanulo> tanulok = FXCollections.observableList(tanuloDao.findAll());
             tableTanulo.setItems(tanulok);
-        }
+            log.info("{} - {} törölve", tanulo.getAzon(), tanulo.getNev());
+        } else log.warn("Nincs kijelölve senki");
     }
 
     public void tanuloSzerkeszt(ActionEvent actionEvent) {
-        if(tableTanulo.getSelectionModel().getSelectedItem()!=null) {
+        if (tableTanulo.getSelectionModel().getSelectedItem() != null) {
             Tanulo tanulo = tableTanulo.getSelectionModel().getSelectedItem();
             szerkesztNevTextField.setText(tanulo.getNev());
             szerkesztKorTextField.setText(String.valueOf(tanulo.getKor()));
@@ -128,46 +131,51 @@ public class TanulomegnezController {
             szerkesztSzulDatePicker.setValue(date);
             ObservableList<String> osztalyok = FXCollections.observableList(osztalyDao.findAll().stream().map(Osztaly::getAzon).collect(Collectors.toList()));
             szerkesztOsztalyChoiceBox.setItems(osztalyok);
-            if(tanulo.getOsztaly()!=null) {
+            if (tanulo.getOsztaly() != null) {
                 szerkesztOsztalyChoiceBox.setValue(tanulo.getOsztaly().getAzon());
             }
-        }
+        } else log.warn("Nincs kijelölve senki");
     }
 
 
     public void tanuloMent(ActionEvent actionEvent) {
-        if(tableTanulo.getSelectionModel().getSelectedItem()!=null && szerkesztNevTextField.getText() != null && szerkesztKorTextField.getText() != null && szerkesztSzulDatePicker.getValue() != null && szerkesztOsztalyChoiceBox.getSelectionModel().getSelectedItem() != null) {
-            Tanulo tanulo = tableTanulo.getSelectionModel().getSelectedItem();
-            Osztaly ujOsztaly = osztalyDao.find(szerkesztOsztalyChoiceBox.getValue()).get();
-            if(tanulo.getOsztaly()!= ujOsztaly && ujOsztaly.letszamValid()) {
-                Osztaly regiOsztaly = osztalyDao.find(tanulo.getOsztaly().getAzon()).get();
-                regiOsztaly.getTanulok().remove(tanulo);
-                regiOsztaly.setAktualisLetszam(regiOsztaly.getTanulok().size());
-                ujOsztaly.getTanulok().add(tanulo);
-                ujOsztaly.setAktualisLetszam(ujOsztaly.getTanulok().size());
-                tanulo.setOsztaly(ujOsztaly);
-            }
-            tanulo.setNev(szerkesztNevTextField.getText());
-            tanulo.setKor(Integer.valueOf(szerkesztKorTextField.getText()));
-            LocalDate localDate = szerkesztSzulDatePicker.getValue();
-            Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
-            Date date = Date.from(instant);
-            tanulo.setSzuletesiIdo(date);
-            if(tanulo.eletkorValid()){
-                if(tanulo.nevValid()){
-                    if(tanulo.szulIdoValid()){
-                        osztalyDao.update(ujOsztaly);
-                        tanuloDao.update(tanulo);
-                        tableTanulo.getItems().clear();
-                        ObservableList<Tanulo> tanulok = FXCollections.observableList(tanuloDao.findAll());
-                        tableTanulo.setItems(tanulok);
-                    }
+        if (tableTanulo.getSelectionModel().getSelectedItem() != null) {
+            if (szerkesztNevTextField.getText() != null && szerkesztKorTextField.getText() != null && szerkesztSzulDatePicker.getValue() != null && szerkesztOsztalyChoiceBox.getSelectionModel().getSelectedItem() != null) {
+                Tanulo tanulo = tableTanulo.getSelectionModel().getSelectedItem();
+                Osztaly ujOsztaly = osztalyDao.find(szerkesztOsztalyChoiceBox.getValue()).get();
+                if (tanulo.getOsztaly() != ujOsztaly && ujOsztaly.letszamValid()) {
+                    Osztaly regiOsztaly = osztalyDao.find(tanulo.getOsztaly().getAzon()).get();
+                    regiOsztaly.getTanulok().remove(tanulo);
+                    regiOsztaly.setAktualisLetszam(regiOsztaly.getTanulok().size());
+                    ujOsztaly.getTanulok().add(tanulo);
+                    ujOsztaly.setAktualisLetszam(ujOsztaly.getTanulok().size());
+                    tanulo.setOsztaly(ujOsztaly);
                 }
-            }
-            szerkesztNevTextField.setText("");
-            szerkesztKorTextField.setText("");
-            szerkesztSzulDatePicker.setValue(null);
-            szerkesztOsztalyChoiceBox.setValue(null);
-        }
+                tanulo.setNev(szerkesztNevTextField.getText());
+                tanulo.setKor(Integer.valueOf(szerkesztKorTextField.getText()));
+                LocalDate localDate = szerkesztSzulDatePicker.getValue();
+                Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+                Date date = Date.from(instant);
+                tanulo.setSzuletesiIdo(date);
+                if (tanulo.eletkorValid()) {
+                    if (tanulo.nevValid()) {
+                        if (tanulo.azonValid()) {
+                            if (tanulo.szulIdoValid()) {
+                                osztalyDao.update(ujOsztaly);
+                                tanuloDao.update(tanulo);
+                                tableTanulo.getItems().clear();
+                                ObservableList<Tanulo> tanulok = FXCollections.observableList(tanuloDao.findAll());
+                                tableTanulo.setItems(tanulok);
+                                log.info("{} - {} szerkesztve", tanulo.getAzon(), tanulo.getNev());
+                            } else log.warn("{} - {} születési ideje nem érvényes", tanulo.getAzon(), tanulo.getNev());
+                        } else log.warn("{} - {} azonosítója nem érvényes", tanulo.getAzon(), tanulo.getNev());
+                    } else log.warn("{} - {} neve nem érvényes", tanulo.getAzon(), tanulo.getNev());
+                } else log.warn("{} - {} életkora nem érvényes", tanulo.getAzon(), tanulo.getNev());
+                szerkesztNevTextField.setText("");
+                szerkesztKorTextField.setText("");
+                szerkesztSzulDatePicker.setValue(null);
+                szerkesztOsztalyChoiceBox.setValue(null);
+            } else log.warn("Nem lett kitöltve az összes mező");
+        } else log.warn("Nem lett kijelölve tanuló");
     }
 }
