@@ -41,26 +41,37 @@ public class Tanulo {
     private Osztaly osztaly;
 
     public boolean eletkorValid(){
-        return getKor() <=14;
+        return getKor()>=6;
     }
 
 
     public boolean nevValid() {
         if (getNev().contains(" ")) {
-            String[] nevreszek = getAzon().split(" ");
+            String[] nevreszek = getNev().split(" ");
             if(nevreszek[0].equals("ifj.") || nevreszek[0].equals("id.")) {
-                for (String n:nevreszek) {
-                    if(!Character.isUpperCase(n.charAt(0))){
-                        return false;
+                if (nevreszek.length > 2) {
+                    for (int i = 1; i < nevreszek.length - 1; i++) {
+                        if (!Character.isUpperCase(nevreszek[i].charAt(0))) {
+                            return false;
+                        }
+                        return true;
                     }
-                    return true;
                 }
+            }
+            for (String m:nevreszek) {
+                if(!Character.isUpperCase(m.charAt(0))){
+                    return false;
+                }
+                return true;
             }
         }
         return false;
     }
 
     public boolean szulIdoValid(){
-        return Calendar.getInstance().get(Calendar.YEAR)-getSzuletesiIdo().getYear()<=getKor()-1;
+        Calendar szuletesiIdo = Calendar.getInstance();
+        szuletesiIdo.setTime(getSzuletesiIdo());
+        return Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)<=getKor()+1 &&
+                Calendar.getInstance().get(Calendar.YEAR)-szuletesiIdo.get(Calendar.YEAR)>=getKor();
     }
 }

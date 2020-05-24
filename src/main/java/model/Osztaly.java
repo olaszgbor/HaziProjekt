@@ -39,15 +39,20 @@ public class Osztaly {
     @JoinColumn(name = "osztaly")
     private Tanar ofo;
 
-    public boolean letszamValid(){
-        return aktualisLetszam<letszam && letszam<0 && letszam > 40;
+    public boolean letszamValid() {
+        return aktualisLetszam < letszam && letszam > 0 && letszam < 40;
     }
 
-    public boolean azonValid(){
-        if(getAzon().contains(".")) {
-            String[] azonreszek = getAzon().split(".");
+    public boolean azonValid() {
+        if (getAzon().contains(".")) {
+            String[] azonreszek = getAzon().split("\\.");
+            for (char c : azonreszek[0].toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    return false;
+                }
+            }
             if (Integer.valueOf(azonreszek[0]) > 0 && Integer.valueOf(azonreszek[0]) <= 13) {
-                if(azonreszek[1].length()<=3){
+                if (azonreszek[1].length() <= 3) {
                     char[] azonreszekreszek = azonreszek[1].toCharArray();
                     for (char c : azonreszekreszek) {
                         if (!Character.isLetter(c))
