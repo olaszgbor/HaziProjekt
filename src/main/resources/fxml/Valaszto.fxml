@@ -15,7 +15,7 @@
             <Font size="27.0" />
          </font></Label>
       <Label layoutX="271.0" layoutY="131.0" text="Létrehozás" />
-      <Label layoutX="272.0" layoutY="246.0" text="Megnézés" />
+      <Label layoutX="231.0" layoutY="251.0" text="Szerkesztés/Megtekintés" />
       <Button fx:id="megnezTanuloButton" layoutX="104.0" layoutY="314.0" mnemonicParsing="false" onAction="#tanuloMenuMegnez" text="Tanuló" />
       <Button fx:id="megnezTanarButton" layoutX="274.0" layoutY="314.0" mnemonicParsing="false" onAction="#tanarMenuMegnez" text="Tanár" />
       <Button fx:id="megnezOsztalyButton" layoutX="461.0" layoutY="314.0" mnemonicParsing="false" onAction="#osztalyMenuMegnez" text="Osztály" />
