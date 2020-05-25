@@ -84,10 +84,14 @@ public class OsztalymegnezController {
     public void osztalyTorles(ActionEvent actionEvent) {
         if (tableOsztaly.getSelectionModel().getSelectedItem() != null) {
             Osztaly osztaly = tableOsztaly.getSelectionModel().getSelectedItem();
-            osztaly.getOfo().setOsztaly(null);
-            osztaly.setOfo(null);
-            osztaly.getTanulok().stream().forEach(tanulo -> tanulo.setOsztaly(null));
-            osztaly.setTanulok(null);
+            if(osztaly.getOfo()!=null) {
+                osztaly.getOfo().setOsztaly(null);
+                osztaly.setOfo(null);
+            }
+            if(osztaly.getTanulok()!=null) {
+                osztaly.getTanulok().stream().forEach(tanulo -> tanulo.setOsztaly(null));
+                osztaly.setTanulok(null);
+            }
             osztalyDao.update(osztaly);
             osztalyDao.remove(osztaly);
             ObservableList<Osztaly> osztalyok = FXCollections.observableList(osztalyDao.findAll());

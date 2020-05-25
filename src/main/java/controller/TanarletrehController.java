@@ -63,6 +63,10 @@ public class TanarletrehController {
                         if (tanar.szulIdoValid()) {
                             tanarDao.persist(tanar);
                             log.info("{} - {} létrehozva", tanar.getAzon(), tanar.getNev());
+                            nevTextfield.setText("");
+                            korTextfield.setText("");
+                            azonTextfield.setText("");
+                            szulDatePicker.setValue(null);
                         } else log.warn("{} - {} születési ideje nem érvényes", tanar.getAzon(), tanar.getNev());
                     } else log.warn("{} - {} azonosítója nem érvényes", tanar.getAzon(), tanar.getNev());
                 } else log.warn("{} - {} neve nem érvényes", tanar.getAzon(), tanar.getNev());

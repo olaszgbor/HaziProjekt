@@ -63,6 +63,9 @@ public class OsztalyletrehController {
                 if(osztaly.azonValid()){
                     osztalyDao.persist(osztaly);
                     log.info("{} létrehozva", osztaly.getAzon());
+                    azonTextfield.setText("");
+                    letszamTextfield.setText("");
+                    ofoChoiceBox.setValue(null);
                 }
                 else log.warn("{} azonosítója nem érvényes", osztaly.getAzon());
             }

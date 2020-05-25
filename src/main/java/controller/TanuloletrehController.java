@@ -82,6 +82,11 @@ public class TanuloletrehController {
                                 osztaly.setAktualisLetszam(osztaly.getTanulok().size());
                                 osztalyDao.update(osztaly);
                                 log.info("Az osztály létszáma bővült");
+                                nevTextfield.setText("");
+                                korTextfield.setText("");
+                                azonTextfield.setText("");
+                                szulDatePicker.setValue(null);
+                                osztalyChoiceBox.setValue(null);
                             } else log.warn("{} - {} születési ideje nem érvényes", tanulo.getAzon(), tanulo.getNev());
                         } else log.warn("{} - {} azonosítója nem érvényes", tanulo.getAzon(), tanulo.getNev());
                     } else log.warn("{} - {} neve nem érvényes", tanulo.getAzon(), tanulo.getNev());
