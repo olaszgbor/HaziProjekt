@@ -113,8 +113,10 @@ public class TanarmegnezController {
     public void tanarTorles(ActionEvent actionEvent) {
         if (tableTanar.getSelectionModel().getSelectedItem() != null) {
             Tanar tanar = tableTanar.getSelectionModel().getSelectedItem();
-            tanar.getOsztaly().setOfo(null);
-            tanar.setOsztaly(null);
+            if(tanar.getOsztaly()!=null) {
+                tanar.getOsztaly().setOfo(null);
+                tanar.setOsztaly(null);
+            }
             tanarDao.update(tanar);
             tanarDao.remove(tanar);
             ObservableList<Tanar> tanarok = FXCollections.observableList(tanarDao.findAll());

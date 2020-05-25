@@ -22,9 +22,12 @@ public class Osztaly {
      */
     @Id
     private String azon;
+    /**
+     * Egy osztály jelenlegi létszáma
+     */
     private int aktualisLetszam;
     /**
-     * Egy osztály létszáma
+     * Egy osztály maximális létszáma létszáma
      */
     private int letszam;
     /**
